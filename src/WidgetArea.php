@@ -23,8 +23,7 @@ namespace D2\Core;
  *         [
  *             WidgetArea::ID          => 'utility-bar',
  *             WidgetArea::NAME        => __( 'Utility Bar', 'example-textdomain' ),
- *             WidgetArea::DESCRIPTION => __( 'Utility bar appearing above the site
- *             header.', 'example-textdomain' ),
+ *             WidgetArea::DESCRIPTION => __( 'Utility bar appearing above the site header.', 'example-textdomain' ),
  *             WidgetArea::BEFORE      => '<div class="utility-bar">',
  *             WidgetArea::AFTER       => '</div>',
  *             WidgetArea::LOCATION    => 'genesis_before_header',
