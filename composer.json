@@ -13,6 +13,11 @@
       "name": "Craig Simpson",
       "homepage": "https://craigsimpson.scot",
       "role": "Developer"
+    },
+    {
+      "name": "Lee Anthony",
+      "homepage": "https://seothemes.com",
+      "role": "Developer"
     }
   ],
   "autoload": {
