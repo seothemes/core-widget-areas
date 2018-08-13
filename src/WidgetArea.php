@@ -23,11 +23,11 @@ namespace D2\Core;
  *         [
  *             WidgetArea::ID          => 'utility-bar',
  *             WidgetArea::NAME        => __( 'Utility Bar', 'example-textdomain' ),
- *             WidgetArea::DESCRIPTION => __( 'Utility bar appearing above the site header.', 'example-textdomain' ),
- *             WidgetArea::BEFORE      => '<div class="utility-bar">',
- *             WidgetArea::AFTER       => '</div>',
- *             WidgetArea::LOCATION    => 'genesis_before_header',
- *             WidgetArea::PRIORITY    => 5,
+ *             WidgetArea::DESCRIPTION => __( 'Utility bar appearing above the site
+ *             header.', 'example-textdomain' ), WidgetArea::BEFORE      => '<div
+ *             class="utility-bar">', WidgetArea::AFTER       => '</div>',
+ *             WidgetArea::LOCATION    => 'genesis_before_header', WidgetArea::PRIORITY
+ *              => 5,
  *         ],
  *     ],
  *     WidgetArea::UNREGISTER => [
@@ -86,11 +86,12 @@ class WidgetArea extends Core {
 	 *
 	 * @param array $config Register config.
 	 *
-	 * @return void
+	 * @return array
 	 */
 	protected function register( $config ) {
 		$register_function = $this->is_genesis() ? 'genesis_register_widget_area' : 'register_sidebar';
-		array_map( $register_function, $config );
+
+		return array_map( $register_function, $config );
 	}
 
 	/**
@@ -100,10 +101,10 @@ class WidgetArea extends Core {
 	 *
 	 * @param array $config Unregister config.
 	 *
-	 * @return void
+	 * @return array
 	 */
 	protected function unregister( $config ) {
-		array_map( 'unregister_sidebar', $config );
+		return array_map( 'unregister_sidebar', $config );
 	}
 
 	/**
@@ -123,8 +124,8 @@ class WidgetArea extends Core {
 			$priority = $args[ self::PRIORITY ] ? $args[ self::PRIORITY ] : 10;
 			add_action( $args[ self::LOCATION ], function () use ( $args ) {
 				$display_function = $this->is_genesis() ? 'genesis_widget_area' : 'dynamic_sidebar';
-				$before = $args[ self::BEFORE ] ? $args[ self::BEFORE ] : '<div class="' . $args[ self::ID ] . ' widget-area"><div class="wrap">';
-				$after = $args[ self::AFTER ] ? $args[ self::AFTER ] : '</div></div>';
+				$before           = $args[ self::BEFORE ] ? $args[ self::BEFORE ] : '<div class="' . $args[ self::ID ] . ' widget-area"><div class="wrap">';
+				$after            = $args[ self::AFTER ] ? $args[ self::AFTER ] : '</div></div>';
 				$display_function(
 					$args[ self::ID ], array(
 						'before' => is_callable( $before ) ? $before() : $before,
