@@ -24,9 +24,9 @@ namespace D2\Core;
  *             WidgetArea::ID          => 'utility-bar',
  *             WidgetArea::NAME        => __( 'Utility Bar', 'example-textdomain' ),
  *             WidgetArea::DESCRIPTION => __( 'Utility bar appearing above the site header.', 'example-textdomain' ),
+ *             WidgetArea::LOCATION    => 'genesis_before_header',
  *             WidgetArea::BEFORE      => '<div class="utility-bar">',
  *             WidgetArea::AFTER       => '</div>',
- *             WidgetArea::LOCATION    => 'genesis_before_header',
  *             WidgetArea::PRIORITY    => 5,
  *         ],
  *     ],
@@ -50,9 +50,11 @@ class WidgetArea extends Core {
 	const ID = 'id';
 	const NAME = 'name';
 	const DESCRIPTION = 'description';
+	const LOCATION = 'location';
 	const BEFORE = 'before';
 	const AFTER = 'after';
-	const LOCATION = 'location';
+	const BEFORE_TITLE = 'before_title';
+	const AFTER_TITLE = 'after_title';
 	const PRIORITY = 'priority';
 	const HEADER_RIGHT = 'header-right';
 	const SIDEBAR = 'sidebar';
@@ -121,18 +123,17 @@ class WidgetArea extends Core {
 			if ( ! array_key_exists( self::LOCATION, $args ) ) {
 				return;
 			}
-			$priority = $args[ self::PRIORITY ] ? $args[ self::PRIORITY ] : 10;
+
 			add_action( $args[ self::LOCATION ], function () use ( $args ) {
 				$display_function = $this->is_genesis() ? 'genesis_widget_area' : 'dynamic_sidebar';
 				$before           = $args[ self::BEFORE ] ? $args[ self::BEFORE ] : '<div class="' . $args[ self::ID ] . ' widget-area"><div class="wrap">';
 				$after            = $args[ self::AFTER ] ? $args[ self::AFTER ] : '</div></div>';
-				$display_function(
-					$args[ self::ID ], array(
-						'before' => is_callable( $before ) ? $before() : $before,
-						'after'  => is_callable( $after ) ? $after() : $after,
-					)
-				);
-			}, $priority );
+
+				$display_function( $args[ self::ID ], [
+					self::BEFORE => is_callable( $before ) ? $before() : $before,
+					self::AFTER  => is_callable( $after ) ? $after() : $after,
+				] );
+			}, $args[ self::PRIORITY ] ? $args[ self::PRIORITY ] : 10 );
 		}
 	}
 
