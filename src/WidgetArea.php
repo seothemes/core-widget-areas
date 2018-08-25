@@ -28,6 +28,9 @@ namespace D2\Core;
  *             WidgetArea::BEFORE      => '<div class="utility-bar">',
  *             WidgetArea::AFTER       => '</div>',
  *             WidgetArea::PRIORITY    => 5,
+ *             WidgetArea::CONDITIONAL => function () {
+ *                 return is_front_page();
+ *             },
  *         ],
  *     ],
  *     WidgetArea::UNREGISTER => [
@@ -56,6 +59,7 @@ class WidgetArea extends Core {
 	const BEFORE_TITLE = 'before_title';
 	const AFTER_TITLE = 'after_title';
 	const PRIORITY = 'priority';
+	const CONDITIONAL = 'conditional';
 	const HEADER_RIGHT = 'header-right';
 	const SIDEBAR = 'sidebar';
 	const SIDEBAR_ALT = 'sidebar-alt';
@@ -112,7 +116,7 @@ class WidgetArea extends Core {
 	/**
 	 * Displays widget areas.
 	 *
-	 * @since 0.2.0
+	 * @since 0.3.0
 	 *
 	 * @param array $config Register config.
 	 *
@@ -125,14 +129,17 @@ class WidgetArea extends Core {
 			}
 
 			add_action( $args[ self::LOCATION ], function () use ( $args ) {
-				$display_function = $this->is_genesis() ? 'genesis_widget_area' : 'dynamic_sidebar';
-				$before           = $args[ self::BEFORE ] ? $args[ self::BEFORE ] : '<div class="' . $args[ self::ID ] . ' widget-area"><div class="wrap">';
-				$after            = $args[ self::AFTER ] ? $args[ self::AFTER ] : '</div></div>';
+				$function    = $this->is_genesis() ? 'genesis_widget_area' : 'dynamic_sidebar';
+				$before      = $args[ self::BEFORE ] ? $args[ self::BEFORE ] : '<div class="' . $args[ self::ID ] . ' widget-area"><div class="wrap">';
+				$after       = $args[ self::AFTER ] ? $args[ self::AFTER ] : '</div></div>';
+				$conditional = $args[ self::CONDITIONAL ] ? $args[ self::CONDITIONAL ] : '__return_false';
 
-				$display_function( $args[ self::ID ], [
-					self::BEFORE => is_callable( $before ) ? $before() : $before,
-					self::AFTER  => is_callable( $after ) ? $after() : $after,
-				] );
+				if ( is_callable( $conditional ) && $conditional() ) {
+					$function( $args[ self::ID ], [
+						self::BEFORE => is_callable( $before ) ? $before() : $before,
+						self::AFTER  => is_callable( $after ) ? $after() : $after,
+					] );
+				}
 			}, $args[ self::PRIORITY ] ? $args[ self::PRIORITY ] : 10 );
 		}
 	}
@@ -140,13 +147,11 @@ class WidgetArea extends Core {
 	/**
 	 * Check for Genesis child theme.
 	 *
-	 * @since 0.2.0
+	 * @since 0.3.0
 	 *
 	 * @return bool
 	 */
 	protected function is_genesis() {
-		$theme = wp_get_theme();
-
-		return 'genesis' === $theme->get( 'Template' ) ? true : false;
+		return 'genesis' === wp_get_theme()->get( 'Template' ) ? true : false;
 	}
 }

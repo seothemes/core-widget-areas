@@ -31,6 +31,9 @@ $d2_widget_areas = [
             WidgetArea::AFTER       => '</div>',
             WidgetArea::LOCATION    => 'genesis_before_header',
             WidgetArea::PRIORITY    => 5,
+            WidgetArea::CONDITIONAL => function () {
+                return is_front_page();
+            },
         ],
     ],
     WidgetArea::UNREGISTER => [
