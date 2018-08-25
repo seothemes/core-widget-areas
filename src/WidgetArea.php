@@ -132,7 +132,7 @@ class WidgetArea extends Core {
 				$function    = $this->is_genesis() ? 'genesis_widget_area' : 'dynamic_sidebar';
 				$before      = $args[ self::BEFORE ] ? $args[ self::BEFORE ] : '<div class="' . $args[ self::ID ] . ' widget-area"><div class="wrap">';
 				$after       = $args[ self::AFTER ] ? $args[ self::AFTER ] : '</div></div>';
-				$conditional = $args[ self::CONDITIONAL ] ? $args[ self::CONDITIONAL ] : '__return_false';
+				$conditional = $args[ self::CONDITIONAL ] ? $args[ self::CONDITIONAL ] : '__return_true';
 
 				if ( is_callable( $conditional ) && $conditional() ) {
 					$function( $args[ self::ID ], [
